@@ -9,7 +9,7 @@ import (
 	"slices"
 )
 
-// as is jump directory recursively searches through file system depth first search.
+// jumpDirectory takes in the name (case insensitive) of the directory you want to find and a starting directory to begin the search from. This will start a depth-first search from the starting directory to locate the directory passed in in the first argument. the return will be the full path to the directory.
 func jumpDirectory(name string, currDir string) string {
 	os.Chdir(currDir)
 	cleanPaths, path := getDirs(currDir, name)
