@@ -1,44 +1,58 @@
 #!/bin/bash
 
-# Define the binary name and URL for downloading
-BINARY_NAME="jumpdir"
-DOWNLOAD_URL="https://github.com/yourusername/yourrepository/releases/latest/download/$BINARY_NAME"
-INSTALL_DIR="/usr/local/bin"
+# Define the URL to the GitHub release
+RELEASE_URL="https://github.com/DNelson35/JumpDir/releases/download/v0.1.0-alpha/jumpdir"
 
-# Download and install the binary
-echo "Downloading $BINARY_NAME..."
-curl -L "$DOWNLOAD_URL" -o "$INSTALL_DIR/$BINARY_NAME"
+# Define the new installation directory
+INSTALL_DIR="$HOME/jumpdir-bin"
+
+# Create the installation directory if it doesn't exist
+mkdir -p "$INSTALL_DIR"
+
+# Download the binary
+echo "Downloading jumpdir..."
+curl -L -o "$INSTALL_DIR/jumpdir" "$RELEASE_URL"
 
 # Make the binary executable
-chmod +x "$INSTALL_DIR/$BINARY_NAME"
+chmod +x "$INSTALL_DIR/jumpdir"
 
 # Add function to the user's shell configuration
 SHELL_CONFIG="$HOME/.zshrc"  # Change this to .bashrc or other if needed
 
 echo "Configuring shell..."
-cat <<EOL >> "$SHELL_CONFIG"
+
+# Ensure that the jd function is not already present in .zshrc
+if ! grep -q 'function jd() {' "$SHELL_CONFIG"; then
+  # Add the function to .zshrc
+  cat <<'EOL' >> "$SHELL_CONFIG"
 # Function to use the tool
 function jd() {
-  local target_dir="\$1"
-  local start_dir="\$2"
+  local target_dir="$1"
+  local start_dir="$2"
 
-  if [[ "\$target_dir" == "-help" || "\$target_dir" == "--help" ]]; then
-    $INSTALL_DIR/$BINARY_NAME -help
-    return 0
+
+  if [[ "$target_dir" == "-help" || "$target_dir" == "--help" ]]; then
+    ./jumpdir-bin/jumpdir -help
+    return 0 
   fi
-  if [[ "\$start_dir" == "." ]]; then
-    local base_path="\$(pwd)"
+  if [[ "$start_dir" == "." ]]; then
+    local base_path="$(pwd)"
     cd ~
-    local sdir="\${base_path}"
-    local dir=\$($INSTALL_DIR/$BINARY_NAME \$target_dir \$sdir)
+    local sdir="${base_path}"
+    local dir=$(./jumpdir-bin/jumpdir $target_dir $sdir)
   else
     cd ~
-    local base_path="\$(pwd)"
-    local sdir="\${base_path}\${start_dir:+/\$start_dir}"
-    local dir=\$($INSTALL_DIR/$BINARY_NAME \$target_dir \$sdir)
+    local base_path="$(pwd)"
+    local sdir="${base_path}${start_dir:+/$start_dir}"
+    local dir=$(./jumpdir-bin/jumpdir $target_dir $sdir)
   fi
-  cd \$dir
+  cd $dir
 }
 EOL
 
-echo "Setup complete. Please restart your terminal or run 'source $SHELL_CONFIG'."
+  echo "Added jd function to $SHELL_CONFIG."
+else
+  echo "jd function already present in $SHELL_CONFIG."
+fi
+
+echo "Setup complete. Please restart your terminal or run 'source $SHELL_CONFIG' to update your PATH and function."
