@@ -9,34 +9,36 @@
 - [Zsh Integration](#zsh-integration)
 - [Help and Flags](#help-and-flags)
 - [Examples](#examples)
+- [Troubleshooting](#troubleshooting)
 
 ## Installation
 
-1. **Clone the Repository**
+To install `JumpDir`, follow these steps:
 
-    Clone the repository containing the Go code <!-- and the Zsh function script: -->
+1. **Download the Latest Release**
+
+   Download the `install.sh` script from the [releases page](https://github.com/DNelson35/JumpDir/releases) of this repository.
+
+2. **Make the Installation Script Executable**
 
    ```sh
-   git clone https://github.com/DNelson35/JumpDir.git
+   chmod +x install.sh
    ```
 
-2. **Build the Go Tool**
-
-   Navigate to the directory containing the Go code and build the tool:
+3. **Run the Installation Script**
 
    ```sh
-   cd <path-to-go-code>
-   go build -o JumpDir main.go
+   ./install.sh
    ```
 
-   This will create an executable named `JumpDir` in the `./scripts/jump_dir/` directory.
+   The script will download the latest `jumpdir` binary, make it executable, and configure your shell to use the `jd` function.
 
-3. **Ensure the Go Binary is Executable**
+4. **Restart Your Terminal**
 
-   Make sure the `JumpDir` binary is executable:
+   Restart your terminal or run the following command to apply the changes:
 
    ```sh
-   chmod +x ./scripts/jump_dir/JumpDir
+   source ~/.zshrc
    ```
 
 ## Usage
@@ -44,69 +46,47 @@
 The `JumpDir` tool requires two arguments:
 
 - `<target_directory>`: The name of the directory you want to find (required).
-- `<starting_point>`: The directory where the search should start (optional). If omitted, the search will start from the home directory.
+- `<starting_point>`: The directory where the search should start (optional). If omitted, the search will start from the home directory. If you pass `.` as the `<starting_point>`, the search will start from your current directory.
 
 ### Command Syntax
 
 ```sh
-./scripts/jump_dir/JumpDir <target_directory> [<starting_point>]
+jd <target_directory> [<starting_point>]
 ```
 
 ### Example
 
 ```sh
-./scripts/jump_dir/JumpDir "targetDirName" /path/to/start
+jd "targetDirName" /path/to/start
 ```
 
 This command will search for "targetDirName" starting from `/path/to/start`.
 
+If you want to search starting from your current directory, use:
+
+```sh
+jd "targetDirName" .
+```
+
+This command will search for "targetDirName" starting from your current location in the file system.
+
 ## Zsh Integration
 
-To use the `JumpDir` tool with a custom `jd` function in your Zsh shell, follow these steps:
+The `install.sh` script configures the `jd` function for you. After running the script, the function is automatically added to your `.zshrc` file.
 
-1. **Add the Function to Your `.zshrc`**
+### Function Overview
 
-   Open your `.zshrc` file and add the following function:
+The `jd` function:
 
-   ```sh
-   function jd() {
-     local target_dir="$1"
-     local start_dir="$2"
-
-     if [[ "$target_dir" == "-help" || "$target_dir" == "--help" ]]; then
-       ./scripts/jump_dir/JumpDir -help
-       return 0
-     fi
-
-     if [[ "$start_dir" == "." ]]; then
-       local base_path="$(pwd)"
-       cd ~
-       local sdir="${base_path}"
-       local dir=$(./scripts/jump_dir/JumpDir "$target_dir" "$sdir")
-     else
-       cd ~
-       local base_path="$(pwd)"
-       local sdir="${base_path}${start_dir:+/$start_dir}"
-       local dir=$(./scripts/jump_dir/JumpDir "$target_dir" "$sdir")
-     fi
-     cd "$dir"
-   }
-   ```
-
-2. **Reload Your Zsh Configuration**
-
-   Apply the changes by reloading your `.zshrc`:
-
-   ```sh
-   source ~/.zshrc
-   ```
+- Searches for the specified directory.
+- Changes to the found directory if it exists.
 
 ## Help and Flags
 
 To display help information for the `JumpDir` tool, use the `-help` or `-h` flags:
 
 ```sh
-./scripts/jump_dir/JumpDir -help
+jd -help
 ```
 
 ### Output
@@ -130,7 +110,7 @@ Flags:
    jd Documents
    ```
 
-   This searches for a directory named Documents starting from your home directory.
+   This searches for a directory named `Documents` starting from your home directory.
 
 2. **Find a Directory Starting from a Specific Directory**
 
@@ -140,7 +120,7 @@ Flags:
 
    This searches for "myProject" starting from `~/workspace`.
 
-3. **Find a Directory Starting from a Current Directory**
+3. **Find a Directory Starting from the Current Directory**
 
    ```sh
    jd myProject .
@@ -151,4 +131,5 @@ Flags:
 ## Troubleshooting
 
 - **Error: `target_directory` and `starting_point` are required**: Ensure that both arguments are provided if using the `jd` function.
-- **Permission Denied**: Verify that `JumpDir` is executable and properly built.
+- **Permission Denied**: Verify that `JumpDir` is executable and properly installed.
+- **Function Not Found**: Ensure that `install.sh` has been run and the `.zshrc` file has been reloaded.
