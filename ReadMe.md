@@ -82,18 +82,25 @@ You can install `JumpDir` either by downloading the latest release or by buildin
        ./jumpdir-bin/jumpdir -help
        return 0
      fi
-     if [[ "$start_dir" == "." ]]; then
-       local base_path="$(pwd)"
-       cd ~
-       local sdir="${base_path}"
-       local dir=$(./jumpdir-bin/jumpdir $target_dir $sdir)
-     else
-       cd ~
-       local base_path="$(pwd)"
-       local sdir="${base_path}${start_dir:+/$start_dir}"
-       local dir=$(./jumpdir-bin/jumpdir $target_dir $sdir)
+     if [[ -z "$target_dir" ]]; then
+       echo "Error: target_directory is required."
+       return 1
      fi
-     cd $dir
+     
+     if [[ -z "$start_dir" ]]; then
+       start_dir="/"
+     elif [[ "$start_dir" == "." ]]; then
+       start_dir="$(pwd)"
+     fi
+
+     local dir=$(./jumpdir-bin/jumpdir $target_dir $start_dir)
+     
+     if [[ -z "$dir" ]]; then
+       echo "Directory not found."
+       return 1
+     fi
+
+     cd "$dir" || return 1
    }
    ```
 
@@ -105,10 +112,10 @@ You can install `JumpDir` either by downloading the latest release or by buildin
 
 ## Usage
 
-The `JumpDir` tool requires two arguments:
+The `JumpDir` tool requires one argument and optionally a second argument:
 
 - `<target_directory>`: The name of the directory you want to find (required).
-- `<starting_point>`: The directory where the search should start (optional). If omitted, the search will start from the home directory. If you pass `.` as the `<starting_point>`, the search will start from your current directory.
+- `<starting_point>`: The directory where the search should start (optional). If omitted, the search will start from the root directory. If you pass `.` as the `<starting_point>`, the search will start from your current directory.
 
 ### Command Syntax
 
@@ -134,7 +141,7 @@ This command will search for "targetDirName" starting from your current location
 
 ## Zsh Integration
 
-The `install.sh` script configures the `jd` function for you. After running the script or building from source, the function is automatically added to your `.zshrc` file.
+The `install.sh` script configures the `jd` function for you. If building from source, ensure the function is added to your `.zshrc` file as described above.
 
 ### Function Overview
 
@@ -142,6 +149,7 @@ The `jd` function:
 
 - Searches for the specified directory.
 - Changes to the found directory if it exists.
+- Handles missing arguments gracefully and provides help if requested.
 
 ## Help and Flags
 
@@ -166,13 +174,13 @@ Flags:
 
 ## Examples
 
-1. **Find a Directory Starting from the Home Directory**
+1. **Find a Directory Starting from the Root Directory**
 
    ```sh
    jd Documents
    ```
 
-   This searches for a directory named `Documents` starting from your home directory.
+   This searches for a directory named `Documents` starting from the root directory.
 
 2. **Find a Directory Starting from a Specific Directory**
 
@@ -192,9 +200,10 @@ Flags:
 
 ## Troubleshooting
 
-- **Error: `target_directory` and `starting_point` are required**: Ensure that both arguments are provided if using the `jd` function.
+- **Error: target_directory is required**: Ensure that the `target_directory` argument is provided. The `starting_point` argument is optional.
 - **Permission Denied**: Verify that `JumpDir` is executable and properly installed.
-- **Function Not Found**: Ensure that `install.sh` has been run or the `.zshrc` file has been updated and reloaded.
+- **Function Not Found**: Ensure that the `.zshrc` file has been updated and reloaded.
+- **Directory Not Found**: Confirm that the directory you are searching for exists.
 
 ## Alpha Release Information
 
