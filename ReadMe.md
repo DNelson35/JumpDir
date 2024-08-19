@@ -10,10 +10,13 @@
 - [Help and Flags](#help-and-flags)
 - [Examples](#examples)
 - [Troubleshooting](#troubleshooting)
+- [Alpha Release Information](#alpha-release-information)
 
 ## Installation
 
-To install `JumpDir`, follow these steps:
+You can install `JumpDir` either by downloading the latest release or by building it from source.
+
+### Option 1: Install from Release
 
 1. **Download the Latest Release**
 
@@ -36,6 +39,65 @@ To install `JumpDir`, follow these steps:
 4. **Restart Your Terminal**
 
    Restart your terminal or run the following command to apply the changes:
+
+   ```sh
+   source ~/.zshrc
+   ```
+
+### Option 2: Build from Source
+
+1. **Clone the Repository**
+
+   ```sh
+   git clone https://github.com/DNelson35/JumpDir.git
+   cd JumpDir
+   ```
+
+2. **Ensure Go Version 1.22.4 or Later**
+
+   Verify that you have Go version 1.22.4 or later installed:
+
+   ```sh
+   go version
+   ```
+
+3. **Build the Binary**
+
+   Build the `jumpdir` binary by running:
+
+   ```sh
+   go build -o jumpdir-bin/jumpdir
+   ```
+
+4. **Set Up the Zsh Shell**
+
+   Add the following function to your `.zshrc` file:
+
+   ```sh
+   function jd() {
+     local target_dir="$1"
+     local start_dir="$2"
+
+     if [[ "$target_dir" == "-help" || "$target_dir" == "--help" ]]; then
+       ./jumpdir-bin/jumpdir -help
+       return 0
+     fi
+     if [[ "$start_dir" == "." ]]; then
+       local base_path="$(pwd)"
+       cd ~
+       local sdir="${base_path}"
+       local dir=$(./jumpdir-bin/jumpdir $target_dir $sdir)
+     else
+       cd ~
+       local base_path="$(pwd)"
+       local sdir="${base_path}${start_dir:+/$start_dir}"
+       local dir=$(./jumpdir-bin/jumpdir $target_dir $sdir)
+     fi
+     cd $dir
+   }
+   ```
+
+5. **Reload Your Zsh Configuration**
 
    ```sh
    source ~/.zshrc
@@ -72,7 +134,7 @@ This command will search for "targetDirName" starting from your current location
 
 ## Zsh Integration
 
-The `install.sh` script configures the `jd` function for you. After running the script, the function is automatically added to your `.zshrc` file.
+The `install.sh` script configures the `jd` function for you. After running the script or building from source, the function is automatically added to your `.zshrc` file.
 
 ### Function Overview
 
@@ -132,4 +194,15 @@ Flags:
 
 - **Error: `target_directory` and `starting_point` are required**: Ensure that both arguments are provided if using the `jd` function.
 - **Permission Denied**: Verify that `JumpDir` is executable and properly installed.
-- **Function Not Found**: Ensure that `install.sh` has been run and the `.zshrc` file has been reloaded.
+- **Function Not Found**: Ensure that `install.sh` has been run or the `.zshrc` file has been updated and reloaded.
+
+## Alpha Release Information
+
+Please note that `JumpDir` is currently in alpha release and is still being tested. Your feedback is highly appreciated as it will help improve the tool. 
+
+### Known Limitations
+
+- **Ignored Files**: The current implementation includes a list of specific files and directories to ignore (e.g., `node_modules`) to speed up the search. This list is located in `search.go`.
+- **Permission Issues**: The tool does not yet handle directories that require special permissions to read. This may be addressed in future updates as it’s not considered critical for the tool's intended purpose.
+
+Thank you for your understanding and support!
