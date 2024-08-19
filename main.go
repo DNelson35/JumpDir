@@ -43,7 +43,7 @@ func jumpDirectory(name string, currDir string) string {
 
 func searchVisDirs(dirs []fs.DirEntry, name string)([]string, string) {
 	var visDirs []string
-	patterns := []string{"node_modules", "__pycache__", "npm"}
+	patterns := []string{"node_modules", "__pycache__", "venv", ".env", "vendor/bundle", "target", "bin", "obj", "pkg", "build", "cmake-build-*", "_build", "deps",}
 	for _, dir := range dirs{
 		if dir.Name()[0] == '.' || !dir.IsDir() || slices.Contains(patterns, dir.Name()) {
 			continue
