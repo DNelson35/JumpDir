@@ -3,6 +3,8 @@
 # Define the URL to the GitHub release
 RELEASE_URL="https://github.com/DNelson35/JumpDir/releases/download/v0.1.0-alpha/jumpdir"
 
+CONFIG_URL="https://github.com/DNelson35/JumpDir/releases/download/v0.1.0-alpha/config.json"
+
 # Define the new installation directory
 INSTALL_DIR="$HOME/jumpdir-bin"
 
@@ -12,6 +14,9 @@ mkdir -p "$INSTALL_DIR"
 # Download the binary
 echo "Downloading jumpdir..."
 curl -L -o "$INSTALL_DIR/jumpdir" "$RELEASE_URL"
+
+echo "Downloading config"
+curl -L -o "$INSTALL_DIR/config.json" "$CONFIG_URL"
 
 # Make the binary executable
 chmod +x "$INSTALL_DIR/jumpdir"
@@ -27,6 +32,7 @@ if ! grep -q 'function jd() {' "$SHELL_CONFIG"; then
   cat <<'EOL' >> "$SHELL_CONFIG"
 # Function to use the tool
 function jd() {
+  export CONFIG_PATH="$HOME/jumpdir-bin/config.json"
   local target_dir="$1"
   local start_dir="$2"
 
