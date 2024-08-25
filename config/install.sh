@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # Define the URL to the GitHub release
-RELEASE_URL="https://github.com/DNelson35/JumpDir/releases/download/v0.1.0-alpha/jumpdir"
+RELEASE_URL="https://github.com/DNelson35/JumpDir/releases/download/v0.2.0-alpha/jumpdir"
 
-CONFIG_URL="https://github.com/DNelson35/JumpDir/releases/download/v0.1.0-alpha/config.json"
+CONFIG_URL="https://github.com/DNelson35/JumpDir/releases/download/v0.2.0-alpha/config.json"
 
 # Define the new installation directory
 INSTALL_DIR="$HOME/jumpdir-bin"
