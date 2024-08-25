@@ -75,32 +75,27 @@ You can install `JumpDir` either by downloading the latest release or by buildin
 
    ```sh
    function jd() {
-     local target_dir="$1"
-     local start_dir="$2"
+      export CONFIG_PATH="$HOME/jumpdir-bin/config.json"
+      local target_dir="$1"
+      local start_dir="$2"
 
-     if [[ "$target_dir" == "-help" || "$target_dir" == "--help" ]]; then
-       ./jumpdir-bin/jumpdir -help
-       return 0
-     fi
-     if [[ -z "$target_dir" ]]; then
-       echo "Error: target_directory is required."
-       return 1
-     fi
-     
-     if [[ -z "$start_dir" ]]; then
-       start_dir="/"
-     elif [[ "$start_dir" == "." ]]; then
-       start_dir="$(pwd)"
-     fi
 
-     local dir=$(./jumpdir-bin/jumpdir $target_dir $start_dir)
-     
-     if [[ -z "$dir" ]]; then
-       echo "Directory not found."
-       return 1
-     fi
-
-     cd "$dir" || return 1
+      if [[ "$target_dir" == "-help" || "$target_dir" == "--help" ]]; then
+         ./jumpdir-bin/jumpdir -help
+         return 0 
+      fi
+      if [[ "$start_dir" == "." ]]; then
+         local base_path="$(pwd)"
+         cd ~
+         local sdir="${base_path}"
+         local dir=$(./jumpdir-bin/jumpdir $target_dir $sdir)
+      else
+         cd ~
+         local base_path="$(pwd)"
+         local sdir="${base_path}${start_dir:+/$start_dir}"
+         local dir=$(./jumpdir-bin/jumpdir $target_dir $sdir)
+      fi
+      cd $dir
    }
    ```
 
