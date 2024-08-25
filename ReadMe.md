@@ -46,6 +46,9 @@ You can install `JumpDir` either by downloading the latest release or by buildin
 
 ### Option 2: Build from Source
 
+to insure the easiest set up possible with no changes create a directory form you root directory called jumpdir-bin
+
+inside of jumpdir-bin will be your binary and config files. the binary should be named jumpdir and the config file config.json
 1. **Clone the Repository**
 
    ```sh
@@ -206,7 +209,10 @@ Please note that `JumpDir` is currently in alpha release and is still being test
 
 ### Known Limitations
 
-- **Ignored Files**: The current implementation includes a list of specific files and directories to ignore (e.g., `node_modules`) to speed up the search. This list is located in `search.go`.
-- **Permission Issues**: The tool does not yet handle directories that require special permissions to read. This may be addressed in future updates as it’s not considered critical for the tool's intended purpose.
+### v0.1.0-alpha
+   - **Ignored Files**: The current implementation includes a list of specific files and directories to ignore (e.g., `node_modules`) to speed up the search. This list is located in `search.go`.
+   - **Permission Issues**: The tool does not yet handle directories that require special permissions to read. This may be addressed in future updates as it’s not considered critical for the tool's intended purpose.
+### v0.2.0-alpha  
+   As of this version the installer will now grab a config file and download it to the jumpdir-bin called config.json. this aims to correct the above limitations form the v0.1.0-alpha release. in the config file you can set folders you would like to ignore such as third party application directories and dependencies managers such as node_modules
 
 Thank you for your understanding and support!
