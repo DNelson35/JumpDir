@@ -1,0 +1,25 @@
+{
+  "ignore_patterns": [
+    "node_modules",
+    "__pycache__",
+    "venv",
+    ".env",
+    "vendor/bundle",
+    "target",
+    "bin",
+    "obj",
+    "pkg",
+    "build",
+    "cmake-build-*",
+    "_build",
+    "deps"
+  ],
+  "restrictedDirs": [
+    "System",
+    "private",
+    "Volumes",
+    "Library",
+    "Network",
+    "Applications"
+  ]
+}
