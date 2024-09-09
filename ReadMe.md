@@ -108,6 +108,36 @@ inside of jumpdir-bin will be your binary and config files. the binary should be
    source ~/.zshrc
    ```
 
+
+Your explanation for the configuration options is clear, but you might want to tighten it up a bit for readability and conciseness. Here’s a refined version of the `Configuration` section:
+
+---
+
+## Configuration
+
+JumpDir uses a config.json file to customize its search behavior. This file is placed in the ~/jumpdir-bin directory by the installer script, and you can modify it as needed. Importantly, changes to this file do not require rebuilding the binary, allowing for easy updates.
+
+### Configuration Options
+
+- **ignore_patterns**: List of directory names to ignore during the search. Useful for excluding directories like `node_modules` or `.git`.
+
+- **restrictedDirs**: List of directories to exclude from the search due to potential permission issues or other reasons.
+
+The lists are merged in `search.go` and treated uniformly. While the separation is mainly for organizational purposes, it doesn’t impact functionality if mixed.
+
+**Example `config.json`:**
+```json
+{
+   "ignore_patterns": ["node_modules", ".git"],
+   "restrictedDirs": ["private", "confidential"]
+}
+```
+
+### Applying Configuration Changes
+
+The `install.sh` script will place a default `config.json` in the `jumpdir-bin` directory. After installation, you can modify this file to include directories you wish to ignore or restrict from your searches.
+
+
 ## Usage
 
 The `JumpDir` tool requires one argument and optionally a second argument:
